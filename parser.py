@@ -58,18 +58,23 @@ if __name__ == "__main__":
     25.공급면적 :{}
     26.대지권면적:{}
     
-    27.어린이집(상위5개 m만): 
-    28.초등학교(상위3개 학교명,거리):
-    29,중학교(상위3개 학교명,거리):
-    30.고등학교(상위3개 학교명,거리):
+    27.어린이집(상위5개 m만): {}
+    28.초등학교(상위3개 학교명,거리):{}
+    29,중학교(상위3개 학교명,거리):{}
+    30.고등학교(상위3개 학교명,거리):{}
+    
+    31.지하철 거리순5개(역명,거리):{}
+    32.최근6개월매매 중위/상위30/하위30:{}
+    33.현재 1㎡당 가격 : {}
     """
     '''______________________________________'''
 
     # === CODE START
     # save_excel(FILENAME, None, HEADER)  # init
 
-    # 10-14, 12-4, 11-16
-    bs4 = get_bs_by_txt('10-14.txt') # init
+    # 10-14, 12-4, 11-16,
+    # 초등많 26-11
+    bs4 = get_bs_by_txt('26-11.txt') # init
 
     gujuso = get_text_by_tag_attr('span','c','gujuso')          # 2열
     dorojuso = get_text_by_tag_attr('span','c','dorojuso')      # 3열
@@ -110,15 +115,69 @@ if __name__ == "__main__":
     garea = get_text_by_tag_attr('span', 'i', 'garea') # 25
     daeji = get_text_by_tag_attr('span', 'i', 'daeji')+'㎡' # 26
 
-    # 27
-    eduDiv = bs4.find('div',class_='edu-info')
-    elementSchool = ''
+    # 27~30
+    eduDivs = bs4.find('div',class_='edu-info').find_all('div',class_='view')
+    # 어린이집
+    eduKids = ""
+    trs = eduDivs[0].find_all('tr')[:5]
+    for tr in trs:
+        eduKids +=  tr.find('td',class_='dist').get_text().strip() +','
+    eduKids = eduKids[:-1]
+    # 초등학교
+    eduElement = ""
+    trs = eduDivs[1].find_all('tr')[:3]
+    for tr in trs:
+        eduElement += tr.find('td').get_text().strip()+tr.find('td', class_='dist').get_text().strip() + ','
+    eduElement = eduElement[:-1]
 
+    # 중고등학교
+    eduMiddle = ""
+    middleCnt = 0
+    eduHigh = ""
+    highCnt = 0
+    trs = eduDivs[2].find_all('tr')
+    for tr in trs:
+        tmp = tr.find('td').get_text().strip()
+        if '중학교' in tmp:
+            if '없습니다' in tmp:
+                pass
+            else:
+                if middleCnt == 3:
+                    continue
+                eduMiddle+=  tr.find('td').get_text().strip()+tr.find_all('td')[-1].get_text().strip()+','
+                middleCnt += 1
+        elif '고등학교' in tmp:
+            if '없습니다' in tmp:
+                pass
+            else:
+                if highCnt == 3:
+                    continue
+                eduHigh += tr.find('td').get_text().strip() + tr.find_all('td')[-1].get_text().strip()+','
+                highCnt += 1
+    eduHigh = eduHigh[:-1]
+    eduMiddle = eduMiddle[:-1]
 
+    # 31
+    subwayDiv = bs4.find('div',class_='subway-info').find('div',class_='view')
+    subwayResult =''
+    trs = subwayDiv.find_all('tr')[:5]
+    for tr in trs:
+        subwayResult += tr.find('td').get_text().strip() + tr.find_all('td')[-1].get_text().strip()+','
+    subwayResult = subwayResult[:-1]
+
+    # 32
+    averPrice = get_text_by_tag_attr('span','i','sellText')+'만원'
+    highPrice = get_text_by_tag_attr('span', 'i', 'sellHLText-HIGH') + '만원'
+    lowPrice = get_text_by_tag_attr('span', 'i', 'sellHLText-LOW') + '만원'
+    price =averPrice+'/'+highPrice+'/'+lowPrice
+    # 33
+    perPrice = bs4.find('div',class_='sisedesc').find('span').get_text().strip() + '만원'
     # TEST
     print(printStr.format(dong,gujuso,dorojuso,landCode,honame,
                           roofName,gujoName,usageMain,usageSub,tjttype,
                           daejiArea,gunmulArea,gunpaeArea,yunArea,jisangyunArea,
                           yongjukArea,height,jihaHeight,jisangHeight,houseCnt,
                             juchajang,agreeDate,jiyuk,jarea,garea,
-                          daeji))
+                          daeji,eduKids,eduElement,eduMiddle,eduHigh,
+                          subwayResult,price,perPrice))
+    print("_"*70)
