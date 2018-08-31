@@ -82,11 +82,15 @@ if __name__ == "__main__":
                 driver.find_element_by_xpath('/html/body/div[6]').click()
                 break
             except:
-                print("지금은아니다")
                 time.sleep(0.5)
         time.sleep(1)
         log('i', "현재 {} {} 진행중 ".format(dong, line.strip()))
-        driver.find_element_by_xpath('/html/body/div[6]').click()
+        while True:
+            try:
+                driver.find_element_by_xpath('/html/body/div[6]').click()
+                break
+            except:
+                time.sleep(0.5)
 
         bs4 = BeautifulSoup(driver.page_source,'lxml')
 
@@ -193,6 +197,7 @@ if __name__ == "__main__":
         # 33
         perPrice = bs4.find('div',class_='sisedesc').find('span').get_text().strip() + '만원'
         # TEST
+        """
         print(printStr.format(dong,gujuso,dorojuso,landCode,honame,
                               roofName,gujoName,usageMain,usageSub,tjttype,
                               daejiArea,gunmulArea,gunpaeArea,yunArea,jisangyunArea,
@@ -201,6 +206,7 @@ if __name__ == "__main__":
                               daeji,eduKids,eduElement,eduMiddle,eduHigh,
                               subwayResult,price,perPrice))
         print("_"*70)
+        """
         save_excel(FILENAME,[dong,gujuso,dorojuso,landCode,honame,
                               roofName,gujoName,usageMain,usageSub,tjttype,
                               daejiArea,gunmulArea,gunpaeArea,yunArea,jisangyunArea,
