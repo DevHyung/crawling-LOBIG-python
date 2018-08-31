@@ -1,5 +1,7 @@
 from bs4 import BeautifulSoup
+from selenium import webdriver
 from CONFIG import *
+import time
 
 def get_bs_by_txt(_FILENAME):
     with open(_FILENAME,'r',encoding='utf8') as f:
@@ -13,18 +15,14 @@ def get_text_by_tag_attr(_tag,_attr,_value):
 
 if __name__ == "__main__":
     '''_______________ CONFIG _______________'''
-    FILENAME = "테스트.xlsx"
-
-    dong = '논현동' # 1열 데이터
-    ['동', '지번', '부번', '17자리 LAND코드', '호수',
-     '지붕', '골조', '용도(주)', '용도(부)', '용도(구분)',
-     '면적(대지)', '면적(건축)', '면적(건폐율)', '면적(연면적)', '면적(지상연면적)',
-     '면적(용적률)', '구성(높이)', '구성(지상층수)', '구성(지하층수)', '구성(세대수)',
-     '구성(주차장)', '승인(사용승인일)', '승인(지역지구)', '전용면적', '공급면적',
-     '대지권면적', '교육정보(어린이집)상위5개 m만',
-     '교육정보(초등학교)상위3개 학교명 및 거리', '교육정보(중학교)상위3개 학교명 및 거리',
-     '교육정보(고등학교)상위3개 학교명 및 거리', '지하철 거리순 5개 역명 및 거리',
-     '최근6개월 매매 시세평가액 중위/상위30%/하위30%', ' 현재 1㎡ 당 가격']
+    dong = input(">>> 동 이름을 입력하세요 : ")  # 1열 데이터
+    driver = webdriver.Chrome('./chromedriver')
+    driver.maximize_window()
+    driver.get('https://www.lobig.co.kr/new/housing#')
+    tt = input(">>> 로그인후 준비가돼면 말해주세요 : ")
+    FILENAME = dong+".xlsx"
+    f = open(dong+'.txt','r',encoding='utf8')
+    lines = f.readlines()
     printStr =\
     """
     1 .동    : {}
@@ -70,114 +68,145 @@ if __name__ == "__main__":
     '''______________________________________'''
 
     # === CODE START
-    # save_excel(FILENAME, None, HEADER)  # init
+    save_excel(FILENAME, None, HEADER)  # init
 
     # 10-14, 12-4, 11-16,
     # 초등많 26-11
-    bs4 = get_bs_by_txt('26-11.txt') # init
+    for line in lines:
+        driver.find_element_by_xpath('//*[@id="bunji"]').clear()
+        driver.find_element_by_xpath('//*[@id="bunji"]').send_keys(line.strip())
+        time.sleep(1)
+        driver.find_element_by_xpath('//*[@id="btn-addrSearch"]').click()
+        while True:
+            try:
+                driver.find_element_by_xpath('/html/body/div[6]').click()
+                break
+            except:
+                print("지금은아니다")
+                time.sleep(0.5)
+        time.sleep(1)
+        log('i', "현재 {} {} 진행중 ".format(dong, line.strip()))
+        driver.find_element_by_xpath('/html/body/div[6]').click()
 
-    gujuso = get_text_by_tag_attr('span','c','gujuso')          # 2열
-    dorojuso = get_text_by_tag_attr('span','c','dorojuso')      # 3열
-    landCode = '' # 4열
-    honame = get_text_by_tag_attr('span','i','honame') + '(호)'    # 5열
-    roofName = get_text_by_tag_attr('span','i','roofName')      # 6열
-    gujoName = get_text_by_tag_attr('span','i','gujoName')      # 7열
+        bs4 = BeautifulSoup(driver.page_source,'lxml')
 
-    # 8-9-10
-    rowD1Spans = bs4.find('div',class_='desc-row d1').find_all('span',class_='basicInfo')
-    usageMain = rowD1Spans[0].get_text().strip() # 8열
-    usageSub = rowD1Spans[1].get_text().strip()  # 9열
-    tjttype = get_text_by_tag_attr('span','i','tjttype') # 10열
+        gujuso = get_text_by_tag_attr('span','c','gujuso')          # 2열
+        dorojuso = get_text_by_tag_attr('span','c','dorojuso')      # 3열
+        landCode = '' # 4열
+        honame = get_text_by_tag_attr('span','i','honame') + '(호)'    # 5열
+        roofName = get_text_by_tag_attr('span','i','roofName')      # 6열
+        gujoName = get_text_by_tag_attr('span','i','gujoName')      # 7열
 
-    # 11 ~ 16
-    rowD2Spans = bs4.find('div',class_='desc-row d2').find_all('span',class_='basicInfo')
-    daejiArea = rowD2Spans[0].get_text().strip()+'㎡' # 11열
-    gunmulArea = rowD2Spans[1].get_text().strip()+'㎡' # 12열
-    gunpaeArea = rowD2Spans[2].get_text().strip()+'%' # 13열
-    yunArea = rowD2Spans[3].get_text().strip()+'㎡'  # 14열
-    jisangyunArea = rowD2Spans[4].get_text().strip()+'㎡' # 15열
-    yongjukArea = rowD2Spans[5].get_text().strip()+'%' # 16열
+        # 8-9-10
+        rowD1Spans = bs4.find('div',class_='desc-row d1').find_all('span',class_='basicInfo')
+        usageMain = rowD1Spans[0].get_text().strip() # 8열
+        usageSub = rowD1Spans[1].get_text().strip()  # 9열
+        tjttype = get_text_by_tag_attr('span','i','tjttype') # 10열
 
-    # 17 - 21
-    rowD3Spans = bs4.find('div', class_='desc-row d3').find_all('span', class_='basicInfo')
-    height = rowD3Spans[0].get_text().strip() + 'm'  # 17열
-    jihaHeight = rowD3Spans[1].get_text().strip() + '층'  # 18열
-    jisangHeight = rowD3Spans[2].get_text().strip() + '층'  # 19열
-    houseCnt = rowD3Spans[3].get_text().strip() + '세대'  # 20열
-    juchajang = ''# 21열
-    # 22-23
-    rowD4Spans = bs4.find('div', class_='desc-row d4').find_all('span', class_='basicInfo')
-    agreeDate = rowD4Spans[0].get_text().strip()   # 22열
-    jiyuk = rowD4Spans[1].get_text().strip()   # 23열
+        # 11 ~ 16
+        rowD2Spans = bs4.find('div',class_='desc-row d2').find_all('span',class_='basicInfo')
+        daejiArea = rowD2Spans[0].get_text().strip()+'㎡' # 11열
+        gunmulArea = rowD2Spans[1].get_text().strip()+'㎡' # 12열
+        gunpaeArea = rowD2Spans[2].get_text().strip()+'%' # 13열
+        yunArea = rowD2Spans[3].get_text().strip()+'㎡'  # 14열
+        jisangyunArea = rowD2Spans[4].get_text().strip()+'㎡' # 15열
+        yongjukArea = rowD2Spans[5].get_text().strip()+'%' # 16열
 
-    # 24-26
-    jarea = get_text_by_tag_attr('span', 'i','jarea')   # 24
-    garea = get_text_by_tag_attr('span', 'i', 'garea') # 25
-    daeji = get_text_by_tag_attr('span', 'i', 'daeji')+'㎡' # 26
+        # 17 - 21
+        rowD3Spans = bs4.find('div', class_='desc-row d3').find_all('span', class_='basicInfo')
+        height = rowD3Spans[0].get_text().strip() + 'm'  # 17열
+        jihaHeight = rowD3Spans[1].get_text().strip() + '층'  # 18열
+        jisangHeight = rowD3Spans[2].get_text().strip() + '층'  # 19열
+        houseCnt = rowD3Spans[3].get_text().strip() + '세대'  # 20열
+        juchajang = ''# 21열
+        # 22-23
+        rowD4Spans = bs4.find('div', class_='desc-row d4').find_all('span', class_='basicInfo')
+        agreeDate = rowD4Spans[0].get_text().strip()   # 22열
+        jiyuk = rowD4Spans[1].get_text().strip()   # 23열
 
-    # 27~30
-    eduDivs = bs4.find('div',class_='edu-info').find_all('div',class_='view')
-    # 어린이집
-    eduKids = ""
-    trs = eduDivs[0].find_all('tr')[:5]
-    for tr in trs:
-        eduKids +=  tr.find('td',class_='dist').get_text().strip() +','
-    eduKids = eduKids[:-1]
-    # 초등학교
-    eduElement = ""
-    trs = eduDivs[1].find_all('tr')[:3]
-    for tr in trs:
-        eduElement += tr.find('td').get_text().strip()+tr.find('td', class_='dist').get_text().strip() + ','
-    eduElement = eduElement[:-1]
+        # 24-26
+        jarea = get_text_by_tag_attr('span', 'i','jarea')   # 24
+        garea = get_text_by_tag_attr('span', 'i', 'garea') # 25
+        daeji = get_text_by_tag_attr('span', 'i', 'daeji')+'㎡' # 26
 
-    # 중고등학교
-    eduMiddle = ""
-    middleCnt = 0
-    eduHigh = ""
-    highCnt = 0
-    trs = eduDivs[2].find_all('tr')
-    for tr in trs:
-        tmp = tr.find('td').get_text().strip()
-        if '중학교' in tmp:
-            if '없습니다' in tmp:
+        # 27~30
+        eduDivs = bs4.find('div',class_='edu-info').find_all('div',class_='view')
+        # 어린이집
+        eduKids = ""
+        trs = eduDivs[0].find_all('tr')[:5]
+        for tr in trs:
+            try:
+                eduKids +=  tr.find('td',class_='dist').get_text().strip() +','
+            except:
                 pass
-            else:
-                if middleCnt == 3:
-                    continue
-                eduMiddle+=  tr.find('td').get_text().strip()+tr.find_all('td')[-1].get_text().strip()+','
-                middleCnt += 1
-        elif '고등학교' in tmp:
-            if '없습니다' in tmp:
+        eduKids = eduKids[:-1]
+        # 초등학교
+        eduElement = ""
+        trs = eduDivs[1].find_all('tr')[:3]
+        for tr in trs:
+            try:
+                eduElement += tr.find('td').get_text().strip()+tr.find('td', class_='dist').get_text().strip() + ','
+            except:
                 pass
-            else:
-                if highCnt == 3:
-                    continue
-                eduHigh += tr.find('td').get_text().strip() + tr.find_all('td')[-1].get_text().strip()+','
-                highCnt += 1
-    eduHigh = eduHigh[:-1]
-    eduMiddle = eduMiddle[:-1]
+        eduElement = eduElement[:-1]
 
-    # 31
-    subwayDiv = bs4.find('div',class_='subway-info').find('div',class_='view')
-    subwayResult =''
-    trs = subwayDiv.find_all('tr')[:5]
-    for tr in trs:
-        subwayResult += tr.find('td').get_text().strip() + tr.find_all('td')[-1].get_text().strip()+','
-    subwayResult = subwayResult[:-1]
+        # 중고등학교
+        eduMiddle = ""
+        middleCnt = 0
+        eduHigh = ""
+        highCnt = 0
+        trs = eduDivs[2].find_all('tr')
+        for tr in trs:
+            tmp = tr.find('td').get_text().strip()
+            if '중학교' in tmp:
+                if '없습니다' in tmp:
+                    pass
+                else:
+                    if middleCnt == 3:
+                        continue
+                    eduMiddle+=  tr.find('td').get_text().strip()+tr.find_all('td')[-1].get_text().strip()+','
+                    middleCnt += 1
+            elif '고등학교' in tmp:
+                if '없습니다' in tmp:
+                    pass
+                else:
+                    if highCnt == 3:
+                        continue
+                    eduHigh += tr.find('td').get_text().strip() + tr.find_all('td')[-1].get_text().strip()+','
+                    highCnt += 1
+        eduHigh = eduHigh[:-1]
+        eduMiddle = eduMiddle[:-1]
 
-    # 32
-    averPrice = get_text_by_tag_attr('span','i','sellText')+'만원'
-    highPrice = get_text_by_tag_attr('span', 'i', 'sellHLText-HIGH') + '만원'
-    lowPrice = get_text_by_tag_attr('span', 'i', 'sellHLText-LOW') + '만원'
-    price =averPrice+'/'+highPrice+'/'+lowPrice
-    # 33
-    perPrice = bs4.find('div',class_='sisedesc').find('span').get_text().strip() + '만원'
-    # TEST
-    print(printStr.format(dong,gujuso,dorojuso,landCode,honame,
-                          roofName,gujoName,usageMain,usageSub,tjttype,
-                          daejiArea,gunmulArea,gunpaeArea,yunArea,jisangyunArea,
-                          yongjukArea,height,jihaHeight,jisangHeight,houseCnt,
-                            juchajang,agreeDate,jiyuk,jarea,garea,
-                          daeji,eduKids,eduElement,eduMiddle,eduHigh,
-                          subwayResult,price,perPrice))
-    print("_"*70)
+        # 31
+        subwayDiv = bs4.find('div',class_='subway-info').find('div',class_='view')
+        subwayResult =''
+        trs = subwayDiv.find_all('tr')[:5]
+        for tr in trs:
+            subwayResult += tr.find('td').get_text().strip() + tr.find_all('td')[-1].get_text().strip()+','
+        subwayResult = subwayResult[:-1]
+
+        # 32
+        averPrice = get_text_by_tag_attr('span','i','sellText')+'만원'
+        highPrice = get_text_by_tag_attr('span', 'i', 'sellHLText-HIGH') + '만원'
+        lowPrice = get_text_by_tag_attr('span', 'i', 'sellHLText-LOW') + '만원'
+        price =averPrice+'/'+highPrice+'/'+lowPrice
+        # 33
+        perPrice = bs4.find('div',class_='sisedesc').find('span').get_text().strip() + '만원'
+        # TEST
+        print(printStr.format(dong,gujuso,dorojuso,landCode,honame,
+                              roofName,gujoName,usageMain,usageSub,tjttype,
+                              daejiArea,gunmulArea,gunpaeArea,yunArea,jisangyunArea,
+                              yongjukArea,height,jihaHeight,jisangHeight,houseCnt,
+                                juchajang,agreeDate,jiyuk,jarea,garea,
+                              daeji,eduKids,eduElement,eduMiddle,eduHigh,
+                              subwayResult,price,perPrice))
+        print("_"*70)
+        save_excel(FILENAME,[dong,gujuso,dorojuso,landCode,honame,
+                              roofName,gujoName,usageMain,usageSub,tjttype,
+                              daejiArea,gunmulArea,gunpaeArea,yunArea,jisangyunArea,
+                              yongjukArea,height,jihaHeight,jisangHeight,houseCnt,
+                                juchajang,agreeDate,jiyuk,jarea,garea,
+                              daeji,eduKids,eduElement,eduMiddle,eduHigh,
+                              subwayResult,price,perPrice],None)
+    driver.quit()
+    f.close()
