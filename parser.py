@@ -45,6 +45,23 @@ if __name__ == "__main__":
     15.지상연면적: {}
     16.용적률   : {} 
     
+    17.높이    : {}
+    18.지상층수 : {}
+    19.지하층수 : {}
+    20.세대수   : {} 
+    21.주차장   : {}
+    
+    22.승인일   :{}
+    23.지역지구 :{}
+    
+    24.전용면적 :{}
+    25.공급면적 :{}
+    26.대지권면적:{}
+    
+    27.어린이집(상위5개 m만): 
+    28.초등학교(상위3개 학교명,거리):
+    29,중학교(상위3개 학교명,거리):
+    30.고등학교(상위3개 학교명,거리):
     """
     '''______________________________________'''
 
@@ -77,14 +94,31 @@ if __name__ == "__main__":
     yongjukArea = rowD2Spans[5].get_text().strip()+'%' # 16열
 
     # 17 - 21
+    rowD3Spans = bs4.find('div', class_='desc-row d3').find_all('span', class_='basicInfo')
+    height = rowD3Spans[0].get_text().strip() + 'm'  # 17열
+    jihaHeight = rowD3Spans[1].get_text().strip() + '층'  # 18열
+    jisangHeight = rowD3Spans[2].get_text().strip() + '층'  # 19열
+    houseCnt = rowD3Spans[3].get_text().strip() + '세대'  # 20열
+    juchajang = ''# 21열
+    # 22-23
+    rowD4Spans = bs4.find('div', class_='desc-row d4').find_all('span', class_='basicInfo')
+    agreeDate = rowD4Spans[0].get_text().strip()   # 22열
+    jiyuk = rowD4Spans[1].get_text().strip()   # 23열
 
+    # 24-26
+    jarea = get_text_by_tag_attr('span', 'i','jarea')   # 24
+    garea = get_text_by_tag_attr('span', 'i', 'garea') # 25
+    daeji = get_text_by_tag_attr('span', 'i', 'daeji')+'㎡' # 26
 
-
-
+    # 27
+    eduDiv = bs4.find('div',class_='edu-info')
+    elementSchool = ''
 
 
     # TEST
     print(printStr.format(dong,gujuso,dorojuso,landCode,honame,
                           roofName,gujoName,usageMain,usageSub,tjttype,
                           daejiArea,gunmulArea,gunpaeArea,yunArea,jisangyunArea,
-                          yongjukArea))
+                          yongjukArea,height,jihaHeight,jisangHeight,houseCnt,
+                            juchajang,agreeDate,jiyuk,jarea,garea,
+                          daeji))
