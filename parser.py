@@ -27,15 +27,24 @@ if __name__ == "__main__":
      '최근6개월 매매 시세평가액 중위/상위30%/하위30%', ' 현재 1㎡ 당 가격']
     printStr =\
     """
-    지번   : {}
-    도로명 : {}
-    랜드코드: {}
-    호수   : {} 
-    지붕   : {}
-    골조   : {}
-    용도(주): {}
-    용도(부): {}
-    구분    : {}
+    1 .동    : {}
+    2 .지번   : {}
+    3 .도로명 : {}
+    4 .랜드코드: {}
+    5 .호수   : {} 
+    6 .지붕   : {}
+    7 .골조   : {}
+    8 .용도(주): {}
+    9 .용도(부): {}
+    10.구분    : {}
+    
+    11.대지면적 : {}
+    12.건축면적 : {}
+    13.건폐율   : {}
+    14.연면적   : {}
+    15.지상연면적: {}
+    16.용적률   : {} 
+    
     """
     '''______________________________________'''
 
@@ -43,12 +52,12 @@ if __name__ == "__main__":
     # save_excel(FILENAME, None, HEADER)  # init
 
     # 10-14, 12-4, 11-16
-    bs4 = get_bs_by_txt('11-16.txt') # init
+    bs4 = get_bs_by_txt('10-14.txt') # init
 
     gujuso = get_text_by_tag_attr('span','c','gujuso')          # 2열
     dorojuso = get_text_by_tag_attr('span','c','dorojuso')      # 3열
     landCode = '' # 4열
-    honame = get_text_by_tag_attr('span','i','honame') + '호'    # 5열
+    honame = get_text_by_tag_attr('span','i','honame') + '(호)'    # 5열
     roofName = get_text_by_tag_attr('span','i','roofName')      # 6열
     gujoName = get_text_by_tag_attr('span','i','gujoName')      # 7열
 
@@ -58,6 +67,16 @@ if __name__ == "__main__":
     usageSub = rowD1Spans[1].get_text().strip()  # 9열
     tjttype = get_text_by_tag_attr('span','i','tjttype') # 10열
 
+    # 11 ~ 16
+    rowD2Spans = bs4.find('div',class_='desc-row d2').find_all('span',class_='basicInfo')
+    daejiArea = rowD2Spans[0].get_text().strip()+'㎡' # 11열
+    gunmulArea = rowD2Spans[1].get_text().strip()+'㎡' # 12열
+    gunpaeArea = rowD2Spans[2].get_text().strip()+'%' # 13열
+    yunArea = rowD2Spans[3].get_text().strip()+'㎡'  # 14열
+    jisangyunArea = rowD2Spans[4].get_text().strip()+'㎡' # 15열
+    yongjukArea = rowD2Spans[5].get_text().strip()+'%' # 16열
+
+    # 17 - 21
 
 
 
@@ -65,4 +84,7 @@ if __name__ == "__main__":
 
 
     # TEST
-    print(printStr.format(gujuso,dorojuso,landCode,honame,roofName,gujoName,usageMain,usageSub,tjttype))
+    print(printStr.format(dong,gujuso,dorojuso,landCode,honame,
+                          roofName,gujoName,usageMain,usageSub,tjttype,
+                          daejiArea,gunmulArea,gunpaeArea,yunArea,jisangyunArea,
+                          yongjukArea))
