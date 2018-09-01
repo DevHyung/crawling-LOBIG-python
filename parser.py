@@ -76,7 +76,12 @@ if __name__ == "__main__":
         driver.find_element_by_xpath('//*[@id="bunji"]').clear()
         driver.find_element_by_xpath('//*[@id="bunji"]').send_keys(line.strip())
         time.sleep(1)
-        driver.find_element_by_xpath('//*[@id="btn-addrSearch"]').click()
+        while True:
+            try:
+                driver.find_element_by_xpath('//*[@id="btn-addrSearch"]').click()
+                break
+            except:
+                time.sleep(0.5)
         while True:
             try:
                 driver.find_element_by_xpath('/html/body/div[6]').click()
