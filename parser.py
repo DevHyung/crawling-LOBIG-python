@@ -259,7 +259,7 @@ if __name__ == "__main__":
                                 subwayList[subwayListIdx + 1] = tr.find_all('td')[-1].get_text().strip()
                                 subwayListIdx += 2
                             subwayResult = subwayResult[:-1]
-                            print(subwayList)
+                            #print(subwayList)
                             # 32
                             averPrice = get_text_by_tag_attr('span', 'i', 'sellText') + '만원'
                             highPrice = get_text_by_tag_attr('span', 'i', 'sellHLText-HIGH') + '만원'
@@ -452,7 +452,7 @@ if __name__ == "__main__":
                     subwayList[subwayListIdx + 1] = tr.find_all('td')[-1].get_text().strip()
                     subwayListIdx += 2
                 subwayResult = subwayResult[:-1]
-                print(subwayList)
+                #print(subwayList)
                 # 32
                 averPrice = get_text_by_tag_attr('span', 'i', 'sellText') + '만원'
                 highPrice = get_text_by_tag_attr('span', 'i', 'sellHLText-HIGH') + '만원'
