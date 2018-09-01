@@ -81,13 +81,17 @@ if __name__ == "__main__":
             try:
                 driver.find_element_by_xpath('/html/body/div[6]').click()
                 if 'visibility: visible;' in driver.find_element_by_xpath('//*[@id="roadviewBox"]').get_attribute('style'):
+                    whileidx = 1
                     while True:
+                        whileidx += 1
+                        if whileidx == 10:
+                            break
                         try:
                             driver.find_element_by_xpath('//*[@id="roadviewBox"]/div[2]').click()
                             print("로드뷰끔")
                             break
                         except:
-                            time.sleep(0.5)
+                            time.sleep(1)
                 break
             except:
                 time.sleep(0.5)
@@ -101,13 +105,17 @@ if __name__ == "__main__":
                     driver.find_element_by_xpath('/html/body/div[6]').click()
                     if 'visibility: visible;' in driver.find_element_by_xpath('//*[@id="roadviewBox"]').get_attribute(
                             'style'):
+                        whileidx = 1
                         while True:
+                            whileidx += 1
+                            if whileidx == 10:
+                                break
                             try:
                                 driver.find_element_by_xpath('//*[@id="roadviewBox"]/div[2]').click()
                                 print("로드뷰끔")
                                 break
                             except:
-                                time.sleep(0.5)
+                                time.sleep(1)
                     break
                 except:
                     time.sleep(0.5)
@@ -164,21 +172,34 @@ if __name__ == "__main__":
                             # 27~30
                             eduDivs = bs4.find('div', class_='edu-info').find_all('div', class_='view')
                             # 어린이집
+                            eduKidsList = [0, 0, 0, 0, 0]
+                            eduKidsListIdx = 0
+
                             eduKids = ""
                             trs = eduDivs[0].find_all('tr')[:5]
                             for tr in trs:
                                 try:
+                                    eduKidsList[eduKidsListIdx] = tr.find('td', class_='dist').get_text().strip()
+                                    eduKidsListIdx += 1
                                     eduKids += tr.find('td', class_='dist').get_text().strip() + ','
                                 except:
                                     pass
                             eduKids = eduKids[:-1]
+
                             # 초등학교
                             eduElement = ""
+                            eduElementList = ['', '', '', '', '', '']
+                            eduElementListIdx = 0
+
                             trs = eduDivs[1].find_all('tr')[:3]
                             for tr in trs:
                                 try:
                                     eduElement += tr.find('td').get_text().strip() + tr.find('td',
                                                                                              class_='dist').get_text().strip() + ','
+                                    eduElementList[eduElementListIdx] = tr.find('td').get_text().strip()
+                                    eduElementList[eduElementListIdx + 1] = tr.find('td',
+                                                                                    class_='dist').get_text().strip()
+                                    eduElementListIdx += 2
                                 except:
                                     pass
                             eduElement = eduElement[:-1]
@@ -186,8 +207,14 @@ if __name__ == "__main__":
                             # 중고등학교
                             eduMiddle = ""
                             middleCnt = 0
+                            eduMiddleList = ['', '', '', '', '', '']
+                            eduMiddleListIdx = 0
+
                             eduHigh = ""
                             highCnt = 0
+                            eduHighList = ['', '', '', '', '', '']
+                            eduHighListIdx = 0
+
                             trs = eduDivs[2].find_all('tr')
                             for tr in trs:
                                 tmp = tr.find('td').get_text().strip()
@@ -199,6 +226,9 @@ if __name__ == "__main__":
                                             continue
                                         eduMiddle += tr.find('td').get_text().strip() + tr.find_all('td')[
                                             -1].get_text().strip() + ','
+                                        eduMiddleList[eduMiddleListIdx] = tr.find('td').get_text().strip()
+                                        eduMiddleList[eduMiddleListIdx + 1] = tr.find_all('td')[-1].get_text().strip()
+                                        eduMiddleListIdx += 2
                                         middleCnt += 1
                                 elif '고등학교' in tmp:
                                     if '없습니다' in tmp:
@@ -208,6 +238,9 @@ if __name__ == "__main__":
                                             continue
                                         eduHigh += tr.find('td').get_text().strip() + tr.find_all('td')[
                                             -1].get_text().strip() + ','
+                                        eduHighList[eduHighListIdx] = tr.find('td').get_text().strip()
+                                        eduHighList[eduHighListIdx + 1] = tr.find_all('td')[-1].get_text().strip()
+                                        eduHighListIdx += 2
                                         highCnt += 1
                             eduHigh = eduHigh[:-1]
                             eduMiddle = eduMiddle[:-1]
@@ -215,12 +248,18 @@ if __name__ == "__main__":
                             # 31
                             subwayDiv = bs4.find('div', class_='subway-info').find('div', class_='view')
                             subwayResult = ''
+                            subwayList = ['', '', '', '', '', '', '', '', '', '']
+                            subwayListIdx = 0
+
                             trs = subwayDiv.find_all('tr')[:5]
                             for tr in trs:
                                 subwayResult += tr.find('td').get_text().strip() + tr.find_all('td')[
                                     -1].get_text().strip() + ','
+                                subwayList[subwayListIdx] = tr.find('td').get_text().strip()
+                                subwayList[subwayListIdx + 1] = tr.find_all('td')[-1].get_text().strip()
+                                subwayListIdx += 2
                             subwayResult = subwayResult[:-1]
-
+                            print(subwayList)
                             # 32
                             averPrice = get_text_by_tag_attr('span', 'i', 'sellText') + '만원'
                             highPrice = get_text_by_tag_attr('span', 'i', 'sellHLText-HIGH') + '만원'
@@ -244,8 +283,22 @@ if __name__ == "__main__":
                                                   daejiArea, gunmulArea, gunpaeArea, yunArea, jisangyunArea,
                                                   yongjukArea, height, jisangHeight, jihaHeight, houseCnt,
                                                   juchajang, agreeDate, jiyuk, jarea, garea,
-                                                  daeji, eduKids, eduElement, eduMiddle, eduHigh,
-                                                  subwayResult, price, perPrice], None)
+                                                  daeji, eduElementList[0], eduElementList[1], eduElementList[2],
+                                                  eduElementList[3],
+                                                  eduElementList[4], eduElementList[0], eduElementList[1],
+                                                  eduElementList[2],
+                                                  eduElementList[3],
+                                                  eduElementList[4], eduElementList[5], eduMiddleList[0],
+                                                  eduMiddleList[1],
+                                                  eduMiddleList[2],
+                                                  eduMiddleList[3], eduMiddleList[4], eduMiddleList[5], eduHighList[0],
+                                                  eduHighList[1],
+                                                  eduHighList[2], eduHighList[3], eduHighList[4], eduHighList[5],
+                                                  subwayList[0],
+                                                  subwayList[1], subwayList[2], subwayList[3], subwayList[4],
+                                                  subwayList[5],
+                                                  subwayList[6], subwayList[7], subwayList[8], subwayList[9], averPrice,
+                                                  highPrice, lowPrice, perPrice], None)
                             saveCnt+=1
                         break
                     except:
@@ -254,13 +307,17 @@ if __name__ == "__main__":
                                 driver.find_element_by_xpath('/html/body/div[6]').click()
                                 if 'visibility: visible;' in driver.find_element_by_xpath(
                                         '//*[@id="roadviewBox"]').get_attribute('style'):
+                                    whileidx = 1
                                     while True:
+                                        whileidx += 1
+                                        if whileidx == 10:
+                                            break
                                         try:
                                             driver.find_element_by_xpath('//*[@id="roadviewBox"]/div[2]').click()
                                             print("로드뷰끔")
                                             break
                                         except:
-                                            time.sleep(0.5)
+                                            time.sleep(1)
                                 break
                             except:
                                 time.sleep(0.5)
@@ -309,21 +366,33 @@ if __name__ == "__main__":
                 # 27~30
                 eduDivs = bs4.find('div', class_='edu-info').find_all('div', class_='view')
                 # 어린이집
+                eduKidsList = [0, 0, 0, 0, 0]
+                eduKidsListIdx = 0
+
                 eduKids = ""
                 trs = eduDivs[0].find_all('tr')[:5]
                 for tr in trs:
                     try:
+                        eduKidsList[eduKidsListIdx] = tr.find('td', class_='dist').get_text().strip()
+                        eduKidsListIdx += 1
                         eduKids += tr.find('td', class_='dist').get_text().strip() + ','
                     except:
                         pass
                 eduKids = eduKids[:-1]
+
                 # 초등학교
                 eduElement = ""
+                eduElementList = ['', '', '', '', '', '']
+                eduElementListIdx = 0
+
                 trs = eduDivs[1].find_all('tr')[:3]
                 for tr in trs:
                     try:
                         eduElement += tr.find('td').get_text().strip() + tr.find('td',
                                                                                  class_='dist').get_text().strip() + ','
+                        eduElementList[eduElementListIdx] = tr.find('td').get_text().strip()
+                        eduElementList[eduElementListIdx + 1] = tr.find('td', class_='dist').get_text().strip()
+                        eduElementListIdx += 2
                     except:
                         pass
                 eduElement = eduElement[:-1]
@@ -331,8 +400,14 @@ if __name__ == "__main__":
                 # 중고등학교
                 eduMiddle = ""
                 middleCnt = 0
+                eduMiddleList = ['', '', '', '', '', '']
+                eduMiddleListIdx = 0
+
                 eduHigh = ""
                 highCnt = 0
+                eduHighList = ['', '', '', '', '', '']
+                eduHighListIdx = 0
+
                 trs = eduDivs[2].find_all('tr')
                 for tr in trs:
                     tmp = tr.find('td').get_text().strip()
@@ -344,6 +419,9 @@ if __name__ == "__main__":
                                 continue
                             eduMiddle += tr.find('td').get_text().strip() + tr.find_all('td')[
                                 -1].get_text().strip() + ','
+                            eduMiddleList[eduMiddleListIdx] = tr.find('td').get_text().strip()
+                            eduMiddleList[eduMiddleListIdx + 1] = tr.find_all('td')[-1].get_text().strip()
+                            eduMiddleListIdx += 2
                             middleCnt += 1
                     elif '고등학교' in tmp:
                         if '없습니다' in tmp:
@@ -353,6 +431,9 @@ if __name__ == "__main__":
                                 continue
                             eduHigh += tr.find('td').get_text().strip() + tr.find_all('td')[
                                 -1].get_text().strip() + ','
+                            eduHighList[eduHighListIdx] = tr.find('td').get_text().strip()
+                            eduHighList[eduHighListIdx + 1] = tr.find_all('td')[-1].get_text().strip()
+                            eduHighListIdx += 2
                             highCnt += 1
                 eduHigh = eduHigh[:-1]
                 eduMiddle = eduMiddle[:-1]
@@ -360,12 +441,18 @@ if __name__ == "__main__":
                 # 31
                 subwayDiv = bs4.find('div', class_='subway-info').find('div', class_='view')
                 subwayResult = ''
+                subwayList = ['', '', '', '', '', '', '', '', '', '']
+                subwayListIdx = 0
+
                 trs = subwayDiv.find_all('tr')[:5]
                 for tr in trs:
                     subwayResult += tr.find('td').get_text().strip() + tr.find_all('td')[
                         -1].get_text().strip() + ','
+                    subwayList[subwayListIdx] = tr.find('td').get_text().strip()
+                    subwayList[subwayListIdx + 1] = tr.find_all('td')[-1].get_text().strip()
+                    subwayListIdx += 2
                 subwayResult = subwayResult[:-1]
-
+                print(subwayList)
                 # 32
                 averPrice = get_text_by_tag_attr('span', 'i', 'sellText') + '만원'
                 highPrice = get_text_by_tag_attr('span', 'i', 'sellHLText-HIGH') + '만원'
@@ -389,8 +476,17 @@ if __name__ == "__main__":
                                       daejiArea, gunmulArea, gunpaeArea, yunArea, jisangyunArea,
                                       yongjukArea, height, jisangHeight, jihaHeight, houseCnt,
                                       juchajang, agreeDate, jiyuk, jarea, garea,
-                                      daeji, eduKids, eduElement, eduMiddle, eduHigh,
-                                      subwayResult, price, perPrice], None)
+                                      daeji, eduElementList[0], eduElementList[1], eduElementList[2], eduElementList[3],
+                                      eduElementList[4], eduElementList[0], eduElementList[1], eduElementList[2],
+                                      eduElementList[3],
+                                      eduElementList[4], eduElementList[5], eduMiddleList[0], eduMiddleList[1],
+                                      eduMiddleList[2],
+                                      eduMiddleList[3], eduMiddleList[4], eduMiddleList[5], eduHighList[0],
+                                      eduHighList[1],
+                                      eduHighList[2], eduHighList[3], eduHighList[4], eduHighList[5], subwayList[0],
+                                      subwayList[1], subwayList[2], subwayList[3], subwayList[4], subwayList[5],
+                                      subwayList[6], subwayList[7], subwayList[8], subwayList[9], averPrice,
+                                      highPrice, lowPrice, perPrice], None)
                 saveCnt += 1
 
             if bs4.find('div', class_='arrow right on') != None:
@@ -404,13 +500,17 @@ if __name__ == "__main__":
                                 driver.find_element_by_xpath('/html/body/div[6]').click()
                                 if 'visibility: visible;' in driver.find_element_by_xpath(
                                         '//*[@id="roadviewBox"]').get_attribute('style'):
+                                    whileidx = 1
                                     while True:
+                                        whileidx += 1
+                                        if whileidx == 10:
+                                            break
                                         try:
                                             driver.find_element_by_xpath('//*[@id="roadviewBox"]/div[2]').click()
                                             print("로드뷰끔")
                                             break
                                         except:
-                                            time.sleep(0.5)
+                                            time.sleep(1)
                                 break
                             except:
                                 time.sleep(0.5)
@@ -419,13 +519,17 @@ if __name__ == "__main__":
                         driver.find_element_by_xpath('/html/body/div[6]').click()
                         if 'visibility: visible;' in driver.find_element_by_xpath(
                                 '//*[@id="roadviewBox"]').get_attribute('style'):
+                            whileidx = 1
                             while True:
+                                whileidx +=1
+                                if whileidx == 10:
+                                    break
                                 try:
                                     driver.find_element_by_xpath('//*[@id="roadviewBox"]/div[2]').click()
                                     print("로드뷰끔")
                                     break
                                 except:
-                                    time.sleep(0.5)
+                                    time.sleep(1)
                         break
                     except:
                         time.sleep(0.5)
