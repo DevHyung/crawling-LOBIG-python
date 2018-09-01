@@ -89,6 +89,7 @@ if __name__ == "__main__":
                         try:
                             driver.find_element_by_xpath('//*[@id="roadviewBox"]/div[2]').click()
                             print("로드뷰끔")
+                            print('반복1')
                             break
                         except:
                             time.sleep(1)
@@ -113,6 +114,7 @@ if __name__ == "__main__":
                             try:
                                 driver.find_element_by_xpath('//*[@id="roadviewBox"]/div[2]').click()
                                 print("로드뷰끔")
+                                print('반복2')
                                 break
                             except:
                                 time.sleep(1)
@@ -283,9 +285,9 @@ if __name__ == "__main__":
                                                   daejiArea, gunmulArea, gunpaeArea, yunArea, jisangyunArea,
                                                   yongjukArea, height, jisangHeight, jihaHeight, houseCnt,
                                                   juchajang, agreeDate, jiyuk, jarea, garea,
-                                                  daeji, eduElementList[0], eduElementList[1], eduElementList[2],
-                                                  eduElementList[3],
-                                                  eduElementList[4], eduElementList[0], eduElementList[1],
+                                                  daeji, eduKidsList[0], eduKidsList[1], eduKidsList[2],
+                                                  eduKidsList[3],
+                                                  eduKidsList[4], eduElementList[0], eduElementList[1],
                                                   eduElementList[2],
                                                   eduElementList[3],
                                                   eduElementList[4], eduElementList[5], eduMiddleList[0],
@@ -305,22 +307,10 @@ if __name__ == "__main__":
                         while True:
                             try:
                                 driver.find_element_by_xpath('/html/body/div[6]').click()
-                                if 'visibility: visible;' in driver.find_element_by_xpath(
-                                        '//*[@id="roadviewBox"]').get_attribute('style'):
-                                    whileidx = 1
-                                    while True:
-                                        whileidx += 1
-                                        if whileidx == 10:
-                                            break
-                                        try:
-                                            driver.find_element_by_xpath('//*[@id="roadviewBox"]/div[2]').click()
-                                            print("로드뷰끔")
-                                            break
-                                        except:
-                                            time.sleep(1)
+                                print("반복3")
                                 break
                             except:
-                                time.sleep(0.5)
+                                time.sleep(3)
             if saveCnt == 0:
 
                 print("ㄱ")
@@ -476,8 +466,8 @@ if __name__ == "__main__":
                                       daejiArea, gunmulArea, gunpaeArea, yunArea, jisangyunArea,
                                       yongjukArea, height, jisangHeight, jihaHeight, houseCnt,
                                       juchajang, agreeDate, jiyuk, jarea, garea,
-                                      daeji, eduElementList[0], eduElementList[1], eduElementList[2], eduElementList[3],
-                                      eduElementList[4], eduElementList[0], eduElementList[1], eduElementList[2],
+                                      daeji, eduKidsList[0], eduKidsList[1], eduKidsList[2], eduKidsList[3],
+                                      eduKidsList[4], eduElementList[0], eduElementList[1], eduElementList[2],
                                       eduElementList[3],
                                       eduElementList[4], eduElementList[5], eduMiddleList[0], eduMiddleList[1],
                                       eduMiddleList[2],
@@ -508,6 +498,7 @@ if __name__ == "__main__":
                                         try:
                                             driver.find_element_by_xpath('//*[@id="roadviewBox"]/div[2]').click()
                                             print("로드뷰끔")
+                                            print('반복4')
                                             break
                                         except:
                                             time.sleep(1)
@@ -527,6 +518,7 @@ if __name__ == "__main__":
                                 try:
                                     driver.find_element_by_xpath('//*[@id="roadviewBox"]/div[2]').click()
                                     print("로드뷰끔")
+                                    print('반복5')
                                     break
                                 except:
                                     time.sleep(1)
