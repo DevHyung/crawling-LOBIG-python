@@ -201,7 +201,7 @@ if __name__ == "__main__":
         print(printStr.format(dong,gujuso,dorojuso,landCode,honame,
                               roofName,gujoName,usageMain,usageSub,tjttype,
                               daejiArea,gunmulArea,gunpaeArea,yunArea,jisangyunArea,
-                              yongjukArea,height,jihaHeight,jisangHeight,houseCnt,
+                              yongjukArea,height,jisangHeight,jihaHeight,houseCnt,
                                 juchajang,agreeDate,jiyuk,jarea,garea,
                               daeji,eduKids,eduElement,eduMiddle,eduHigh,
                               subwayResult,price,perPrice))
@@ -210,7 +210,7 @@ if __name__ == "__main__":
         save_excel(FILENAME,[dong,gujuso,dorojuso,landCode,honame,
                               roofName,gujoName,usageMain,usageSub,tjttype,
                               daejiArea,gunmulArea,gunpaeArea,yunArea,jisangyunArea,
-                              yongjukArea,height,jihaHeight,jisangHeight,houseCnt,
+                              yongjukArea,height,jisangHeight,jihaHeight,houseCnt,
                                 juchajang,agreeDate,jiyuk,jarea,garea,
                               daeji,eduKids,eduElement,eduMiddle,eduHigh,
                               subwayResult,price,perPrice],None)
