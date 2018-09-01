@@ -80,11 +80,14 @@ if __name__ == "__main__":
         while True:
             try:
                 driver.find_element_by_xpath('/html/body/div[6]').click()
-                if 'visibility: visible;' in driver.find_element_by_xpath('//*[@id="roadviewBox"]').get_attribute(
-                        'style'):
-                    time.sleep(0.5)
-                    print("로드뷰끔")
-                    driver.find_element_by_xpath('/html/body/div[8]/div[3]').click()
+                if 'visibility: visible;' in driver.find_element_by_xpath('//*[@id="roadviewBox"]').get_attribute('style'):
+                    while True:
+                        try:
+                            driver.find_element_by_xpath('//*[@id="roadviewBox"]/div[2]').click()
+                            print("로드뷰끔")
+                            break
+                        except:
+                            time.sleep(0.5)
                 break
             except:
                 time.sleep(0.5)
@@ -93,16 +96,18 @@ if __name__ == "__main__":
         saveCnt = 0
         #
         while True:
-            print('3')
             while True:
-                print('4')
                 try:
                     driver.find_element_by_xpath('/html/body/div[6]').click()
                     if 'visibility: visible;' in driver.find_element_by_xpath('//*[@id="roadviewBox"]').get_attribute(
                             'style'):
-                        time.sleep(0.5)
-                        print("로드뷰끔")
-                        driver.find_element_by_xpath('/html/body/div[8]/div[3]').click()
+                        while True:
+                            try:
+                                driver.find_element_by_xpath('//*[@id="roadviewBox"]/div[2]').click()
+                                print("로드뷰끔")
+                                break
+                            except:
+                                time.sleep(0.5)
                     break
                 except:
                     time.sleep(0.5)
@@ -244,21 +249,23 @@ if __name__ == "__main__":
                             saveCnt+=1
                         break
                     except:
-                        print('1')
                         while True:
-                            print('2')
                             try:
                                 driver.find_element_by_xpath('/html/body/div[6]').click()
                                 if 'visibility: visible;' in driver.find_element_by_xpath(
                                         '//*[@id="roadviewBox"]').get_attribute('style'):
-                                    time.sleep(0.5)
-                                    print("로드뷰끔")
-                                    driver.find_element_by_xpath('/html/body/div[8]/div[3]').click()
+                                    while True:
+                                        try:
+                                            driver.find_element_by_xpath('//*[@id="roadviewBox"]/div[2]').click()
+                                            print("로드뷰끔")
+                                            break
+                                        except:
+                                            time.sleep(0.5)
                                 break
                             except:
                                 time.sleep(0.5)
             if saveCnt == 0:
-                saveCnt += 1
+
                 print("ㄱ")
                 gujuso = get_text_by_tag_attr('span', 'c', 'gujuso')  # 2열
                 dorojuso = get_text_by_tag_attr('span', 'c', 'dorojuso')  # 3열
@@ -384,16 +391,41 @@ if __name__ == "__main__":
                                       juchajang, agreeDate, jiyuk, jarea, garea,
                                       daeji, eduKids, eduElement, eduMiddle, eduHigh,
                                       subwayResult, price, perPrice], None)
+                saveCnt += 1
 
             if bs4.find('div', class_='arrow right on') != None:
-                driver.find_element_by_xpath('//*[@id="nextHoBtn"]').click()
+                while True:
+                    try:
+                        driver.find_element_by_xpath('//*[@id="nextHoBtn"]').click()
+                        break
+                    except:
+                        while True:
+                            try:
+                                driver.find_element_by_xpath('/html/body/div[6]').click()
+                                if 'visibility: visible;' in driver.find_element_by_xpath(
+                                        '//*[@id="roadviewBox"]').get_attribute('style'):
+                                    while True:
+                                        try:
+                                            driver.find_element_by_xpath('//*[@id="roadviewBox"]/div[2]').click()
+                                            print("로드뷰끔")
+                                            break
+                                        except:
+                                            time.sleep(0.5)
+                                break
+                            except:
+                                time.sleep(0.5)
                 while True:
                     try:
                         driver.find_element_by_xpath('/html/body/div[6]').click()
-                        if 'visibility: visible;' in driver.find_element_by_xpath('//*[@id="roadviewBox"]').get_attribute('style'):
-                            time.sleep(0.5)
-                            print("로드뷰끔")
-                            driver.find_element_by_xpath('/html/body/div[8]/div[3]').click()
+                        if 'visibility: visible;' in driver.find_element_by_xpath(
+                                '//*[@id="roadviewBox"]').get_attribute('style'):
+                            while True:
+                                try:
+                                    driver.find_element_by_xpath('//*[@id="roadviewBox"]/div[2]').click()
+                                    print("로드뷰끔")
+                                    break
+                                except:
+                                    time.sleep(0.5)
                         break
                     except:
                         time.sleep(0.5)
