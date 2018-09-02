@@ -129,11 +129,31 @@ if __name__ == "__main__":
             bs4 = BeautifulSoup(driver.page_source, 'lxml')
             divs = bs4.find_all('div', class_='floor-number')
             floors = driver.find_elements_by_class_name('floor-number')
+
             for idx in range(len(divs)):
+                foridx = 0
                 while True:
                     try:
+                        floors[idx].get_attribute('class') == 'floor-number' and floors[idx].get_attribute(
+                            'style') != 'color: rgb(158, 158, 158);'
+                    except:
+                        print("페이지 안붙어서 쉰다.")
+                        qwe = input(">>> 준비돼면 엔터눌러주세요 ::")
+                        floors = driver.find_elements_by_class_name('floor-number')
+                        if 'right: 0px' in driver.find_element_by_xpath('/html/body/div[6]').get_attribute('style'):
+                            print('들어가있어서 클릭해준다')
+                            time.sleep(2)
+                            driver.find_element_by_xpath('/html/body/div[6]').click()
+                        time.sleep(1)
+                    try:
+                        print("진입1")
+                        foridx +=1
+                        if foridx == 60:
+                            break
                         if floors[idx].get_attribute('class') == 'floor-number' and floors[idx].get_attribute('style') != 'color: rgb(158, 158, 158);':
+                            print("진입2")
                             floors[idx].click()
+                            print("진입3")
                             time.sleep(0.5)
                             bs4 = BeautifulSoup(driver.page_source, 'lxml')
                             #
@@ -313,9 +333,10 @@ if __name__ == "__main__":
                             try:
                                 driver.find_element_by_xpath('/html/body/div[6]').click()
                                 print("반복3")
+                                time.sleep(1)
                                 break
                             except:
-                                time.sleep(3)
+                                time.sleep(0.5)
             if saveCnt == 0:
 
                 print("ㄱ")
